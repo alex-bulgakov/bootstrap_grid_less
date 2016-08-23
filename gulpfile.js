@@ -1,5 +1,6 @@
 var gulp         = require('gulp'),
 		sass         = require('gulp-sass'),
+		less				 = require('gulp-less'),
 		autoprefixer = require('gulp-autoprefixer'),
 		cleanCSS    = require('gulp-clean-css'),
 		rename       = require('gulp-rename'),
@@ -7,7 +8,7 @@ var gulp         = require('gulp'),
 		concat       = require('gulp-concat'),
 		uglify       = require('gulp-uglify');
 
-gulp.task('browser-sync', ['styles', 'scripts'], function() {
+gulp.task('browser-sync', ['styles', 'less', 'scripts'], function() {
 		browserSync.init({
 				server: {
 						baseDir: "./app"
@@ -21,6 +22,17 @@ gulp.task('styles', function () {
 	.pipe(sass({
 		includePaths: require('node-bourbon').includePaths
 	}).on('error', sass.logError))
+	.pipe(rename({suffix: '.min', prefix : ''}))
+	.pipe(autoprefixer({browsers: ['last 15 versions'], cascade: false}))
+	.pipe(cleanCSS())
+	.pipe(gulp.dest('app/css'))
+	.pipe(browserSync.stream());
+});
+
+
+gulp.task('less', function () {
+	return gulp.src('less/*.less')
+	.pipe(less())
 	.pipe(rename({suffix: '.min', prefix : ''}))
 	.pipe(autoprefixer({browsers: ['last 15 versions'], cascade: false}))
 	.pipe(cleanCSS())
@@ -42,6 +54,7 @@ gulp.task('scripts', function() {
 
 gulp.task('watch', function () {
 	gulp.watch('sass/*.sass', ['styles']);
+	gulp.watch('less/**/*.less', ['less']);
 	gulp.watch('app/libs/**/*.js', ['scripts']);
 	gulp.watch('app/js/*.js').on("change", browserSync.reload);
 	gulp.watch('app/*.html').on('change', browserSync.reload);

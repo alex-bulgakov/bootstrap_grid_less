@@ -1,0 +1,37 @@
+@import "grid/bootstrap.less";
+@import "test/test.less";
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+.header, .content, .footer {
+  .make-row();
+  .clearfix;
+}
+
+.header {
+  &__menu {
+    .make-md-column(12);
+  }
+}
+
+.content {
+  &__item {
+    .make-md-column(4);
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.footer {
+  &__item {
+    .make-md-column(2);
+  }
+}
+
+
