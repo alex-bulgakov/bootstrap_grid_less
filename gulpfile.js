@@ -6,6 +6,7 @@ var gulp         = require('gulp'),
 		rename       = require('gulp-rename'),
 		browserSync  = require('browser-sync').create(),
 		concat       = require('gulp-concat'),
+		gutil				 = require('gulp-util'),
 		uglify       = require('gulp-uglify');
 
 gulp.task('browser-sync', ['styles', 'less', 'scripts'], function() {
@@ -31,13 +32,15 @@ gulp.task('styles', function () {
 
 
 gulp.task('less', function () {
-	return gulp.src('less/*.less')
-	.pipe(less())
-	.pipe(rename({suffix: '.min', prefix : ''}))
-	.pipe(autoprefixer({browsers: ['last 15 versions'], cascade: false}))
-	.pipe(cleanCSS())
-	.pipe(gulp.dest('app/css'))
-	.pipe(browserSync.stream());
+		gulp.src('less/*.less')
+		.pipe(less().on('error', function (e) {
+			gutil.log(e);
+		} ))
+		.pipe(rename({suffix: '.min', prefix : ''}))
+		.pipe(autoprefixer({browsers: ['last 15 versions'], cascade: false}))
+		.pipe(cleanCSS())
+		.pipe(gulp.dest('app/css'))
+		.pipe(browserSync.stream());
 });
 
 gulp.task('scripts', function() {
